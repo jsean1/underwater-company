@@ -6,7 +6,6 @@ getgenv().on = false
 while getgenv().on do
     for _, circle in ipairs(circlesFolder:GetChildren()) do
         if circle:IsA("BasePart") then
-            -- Teleport the character above the circle by 1 unit
             player.Character:SetPrimaryPartCFrame(CFrame.new(circle.Position + Vector3.new(0, 1, 0)))
 
             
