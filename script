@@ -1,7 +1,7 @@
 local circlesFolder = workspace.Circles
 local player = game.Players.LocalPlayer
 
-getgenv().on = true
+getgenv().on = false
 
 while getgenv().on do
     for _, circle in ipairs(circlesFolder:GetChildren()) do
