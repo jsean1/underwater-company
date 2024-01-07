@@ -1,16 +1,74 @@
-local circlesFolder = workspace.Circles
 local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+local startPosition = Vector3.new(-503.2907409667969, -43.40001678466797, -1464.4521484375)
+local dropPosition = Vector3.new(-503.2907409667969, -43.40001678466797, -1464.4521484375)  -- Replace with the actual drop position
+local distanceThreshold = 100
 
-getgenv().on = false
+getgenv().RunScript = true
 
-while getgenv().on do
-    for _, circle in ipairs(circlesFolder:GetChildren()) do
-        if circle:IsA("BasePart") then
-            player.Character:SetPrimaryPartCFrame(CFrame.new(circle.Position + Vector3.new(0, 1, 0)))
+local function isNearStartingPosition(position)
+    local distance = (position - startPosition).magnitude
+    return distance <= distanceThreshold
+end
 
-            
-            wait(0.1)
+local function fireProximityPromptByName(promptName)
+    for _, descendant in ipairs(workspace:GetDescendants()) do
+        if descendant:IsA("ProximityPrompt") and descendant.Name == promptName then
+            fireproximityprompt(descendant)
         end
     end
-    wait(0.2)
+end
+
+local function interactWithProximityPrompt(item, promptName)
+    local primaryPart = item.PrimaryPart or item:FindFirstChild("PrimaryPart")
+
+    if primaryPart and not isNearStartingPosition(primaryPart.Position) then
+        for teleportCount = 1, 4 do
+            humanoidRootPart.CFrame = CFrame.new(primaryPart.Position + Vector3.new(0, 1, 0))
+            wait(0.5)
+            
+            if item.Parent then
+                fireProximityPromptByName(promptName)
+                wait(0.5)
+            else
+                break  -- Stop teleporting if the item no longer exists
+            end
+        end
+
+        -- Move to the drop position after interacting with each item
+        humanoidRootPart.CFrame = CFrame.new(dropPosition)
+        wait(0.5)  -- Add a slight delay before dropping
+        game:GetService("ReplicatedStorage"):WaitForChild("Drop"):FireServer()
+        wait(0.5)  -- Add a slight delay after dropping
+    end
+end
+
+local itemsFolder = workspace:FindFirstChild("Items")
+
+if itemsFolder then
+    local initialItemCount = #itemsFolder:GetChildren()
+    local collectedItemCount = 0
+
+    if initialItemCount > 1 then
+        while getgenv().RunScript and collectedItemCount < initialItemCount do
+            local currentItemCount = #itemsFolder:GetChildren()
+
+            if currentItemCount > 1 then
+                for _, item in ipairs(itemsFolder:GetChildren()) do
+                    interactWithProximityPrompt(item, "Prompt")
+                    collectedItemCount = collectedItemCount + 1
+                end
+            else
+                warn("No items left in the 'Items' folder. Stopping the script.")
+                getgenv().RunScript = false
+                break  -- Break out of the loop if there are no items left
+            end
+        end
+    else
+        warn("Not enough items in the 'Items' folder. Stopping the script.")
+    end
+else
+    warn("No 'Items' folder found. Stopping the script.")
+    getgenv().RunScript = false
 end
