@@ -44,13 +44,13 @@ local function interactWithProximityPrompt(item, promptName)
     end
 end
 
-local itemsFolder = workspace:FindFirstChild("Items")
+while getgenv().RunScript do
+    local itemsFolder = workspace:FindFirstChild("Items")
 
-if itemsFolder then
-    local initialItemCount = #itemsFolder:GetChildren()
-    local collectedItemCount = 0
+    if itemsFolder and #itemsFolder:GetChildren() > 1 then
+        local initialItemCount = #itemsFolder:GetChildren()
+        local collectedItemCount = 0
 
-    if initialItemCount > 1 then
         while getgenv().RunScript and collectedItemCount < initialItemCount do
             local currentItemCount = #itemsFolder:GetChildren()
 
@@ -64,11 +64,12 @@ if itemsFolder then
                 getgenv().RunScript = false
                 break  -- Break out of the loop if there are no items left
             end
+
+            wait(0.5)  -- Add a delay before checking for items again
         end
     else
-        warn("Not enough items in the 'Items' folder. Stopping the script.")
+        warn("No or not enough items in the 'Items' folder. Stopping the script.")
+        getgenv().RunScript = false
+        break  -- Break out of the loop if 'Items' folder is not found or doesn't have enough items
     end
-else
-    warn("No 'Items' folder found. Stopping the script.")
-    getgenv().RunScript = false
 end
