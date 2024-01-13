@@ -3,7 +3,7 @@ local character = player.Character or player.CharacterAdded:Wait()
 local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 local startPosition = Vector3.new(-503.2907409667969, -43.40001678466797, -1464.4521484375)
 local dropPosition = Vector3.new(-503.2907409667969, -43.40001678466797, -1464.4521484375)  -- Replace with the actual drop position
-local distanceThreshold = 100
+local distanceThreshold = 200
 
 getgenv().RunScript = true
 
