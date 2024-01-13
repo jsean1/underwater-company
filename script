@@ -5,7 +5,7 @@ local startPosition = Vector3.new(-503.2907409667969, -43.40001678466797, -1464.
 local dropPosition = Vector3.new(-503.2907409667969, -43.40001678466797, -1464.4521484375)  -- Replace with the actual drop position
 local distanceThreshold = 200
 
-getgenv().RunScript = true
+getgenv().RunScript = false
 
 local function isNearStartingPosition(position)
     local distance = (position - startPosition).magnitude
