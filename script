@@ -44,7 +44,7 @@ local function interactWithProximityPrompt(item, promptName)
     end
 end
 
-while getgenv().RunScript do
+while getgenv().RunScript = true do
     local itemsFolder = workspace:FindFirstChild("Items")
 
     if itemsFolder and #itemsFolder:GetChildren() > 1 then
